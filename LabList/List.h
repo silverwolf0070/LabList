@@ -10,6 +10,8 @@ private:
 	unsigned long int size = 0;
 	Node<T>* head = nullptr;
 	Node<T>* tail = nullptr;
+
+	//Получить узел
 	Node<T>* getNode(unsigned long int id) {
 		if (id >= size) {
 			throw "id bigger then size";
@@ -29,7 +31,6 @@ private:
 		}
 		return cur;
 	}
-
 
 public:
 	//Добавить в конец
@@ -135,6 +136,7 @@ public:
 		return getNode(id)->data;
 	}
 
+	//Вывод в консоль все элементы листа
 	void print() {
 		if (head == nullptr)
 			throw "List is empty";
@@ -154,27 +156,60 @@ public:
 	return;
 	}
 
+	//Получить первый элемент
 	Node<T>* getHeadNode() {
 		return getNode(0);
 	}
 
+	//Получить последний элемент
 	Node<T>* getTailNode() {
 		return getNode(size - 1);
 	}
 
+	//Удаление списка не трогая содержимое
 	void clear() {
 		head = nullptr;
 		tail = nullptr;
+		size = 0;
 	}
 
+	//Склеивание списков
 	void addList(List<T>* list) {
 		Node<T>* cur = getTailNode();
 		Node<T>* next = list->getHeadNode();
 		Node<T>* newTail = list->getTailNode();
 		cur->next = next;
 		tail = newTail;
-		list->clear();
 		size += list->getSize();
+		list->clear();
 	}
+
+	//Перегрузка оператора вывода потока
+	template<typename U>
+	friend std::ostream& operator << (std::ostream& os, const List<U>& list);
+
+	//Проверка на нахождение такого элемента внутри списка
+	bool inside(T _data) {
+		Node<T>* cur = head;
+		while (cur != nullptr)
+		{
+			if (cur->data == _data) {
+				return true;
+			}
+			cur = cur->next;
+		}
+		return false;
+	}
+
+	
 };
 
+template<typename T>
+std::ostream& operator << (std::ostream& os, List<T>& list) {
+	Node<T>* cur = list.getHeadNode();
+	while (cur != nullptr) {
+		os << cur->data << " ";
+		cur = cur->next;
+	}
+	return os;
+}
